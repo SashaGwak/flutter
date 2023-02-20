@@ -1,26 +1,101 @@
 import 'package:flutter/material.dart';
+import 'package:toonflix/widget/button.dart';
 
 void main() {
-  runApp(App());
+  runApp(const App());
 }
-// 앱을 처음 실행할때 보이는 게 App이니까 app은 우리 앱의 root
-// root App으로 기본 설정 해줘야함
-// Material은 구글, Cupertino는 ios(디자인 선택)
 
 class App extends StatelessWidget {
-  // widget을 만들기위해서는 flutter SDK에 있는 3개의 core widget중에 하나를 extend받아야함
-  // 모든 widget은 build 메서드(return하는 걸 UI에 보여줌)를 구현해줘야함
-  // StatelessWidget는 화면에 띄워주는 애
-  // Scaffold는 화면의 구성 및 구조에 관한것들을 가지고 있음(Top bar, body 등...)
+  const App({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Hello flutter!'),
-        ),
-        body: Center(
-          child: Text('Hello world!'),
+        // 지정색깔 OxFF 적고 쓰거나, Color.fromARGB 사용
+        backgroundColor: const Color(0xFF181818),
+        // column은 수직, row는 수평 배열
+        // row의 MainAxisAlignment는 수평방향
+        // column의 MainAxisAlignment는 수직방향
+        body: Padding(
+          // all은 상하좌우에 모두 padding 10, only로 상화좌우중 하나 선택
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            // 간격을 주기위해서는 SizedBox 사용
+            children: [
+              const SizedBox(
+                height: 80,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text(
+                        'Hey, Selena',
+                        style: TextStyle(
+                          color: Colors.amber,
+                          fontSize: 38,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Text(
+                        'Welcome back',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 18,
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 120,
+              ),
+              Text(
+                'Total balance',
+                style: TextStyle(
+                  fontSize: 22,
+                  color: Colors.white.withOpacity(0.8),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              const Text(
+                '\$5 194 482',
+                style: TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  // container는 child를 가지고 있는 단순한 box, html의 div같은거
+                  Button(
+                    text: 'Transfer',
+                    bgColor: Colors.amber,
+                    textColor: Colors.black,
+                  ),
+                  Button(
+                    text: 'Request',
+                    bgColor: Color(0xFF1F2123),
+                    textColor: Colors.white,
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
