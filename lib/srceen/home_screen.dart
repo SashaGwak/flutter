@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toonflix/model/webtoon_model.dart';
 import 'package:toonflix/service/api_service.dart';
+import 'package:toonflix/widgets/webtoon_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -29,7 +30,16 @@ class HomeScreen extends StatelessWidget {
           builder: (context, snapshot) {
             // future가 완료되어 데이터가 존재하는 지 확인
             if (snapshot.hasData) {
-              return MakeList(snapshot);
+              // column은 ListView의 높이 알지못하기 때문에 Expanded처리 해줘야함
+              // Expanded는 Row나 column의 chlid를 확장해서 child가 남는 공간을 채우게함
+              return Column(
+                children: [
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Expanded(child: makeList(snapshot))
+                ],
+              );
             }
             return const Center(
               child: CircularProgressIndicator(),
@@ -38,17 +48,22 @@ class HomeScreen extends StatelessWidget {
         ));
   }
 
-  ListView MakeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
+  ListView makeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
     return ListView.separated(
       // user가 보여주는 화면의 데이터만 데꼬옴! WOW
       scrollDirection: Axis.horizontal, // 가로방향
       itemCount: snapshot.data!.length,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
         var webtoon = snapshot.data![index];
-        return Text(webtoon.title);
+        return Webtoon(
+          title: webtoon.title,
+          thumb: webtoon.thumb,
+          id: webtoon.id,
+        );
       },
       // ListView.separated 쓰면 separatorBuilder(공백만들어주기) 사용가능
-      separatorBuilder: (context, index) => const SizedBox(width: 20),
+      separatorBuilder: (context, index) => const SizedBox(width: 40),
     );
 
     // 많은 양의 데이터를 연속적으로 보여주려면 ListView쓰는게 좋음
