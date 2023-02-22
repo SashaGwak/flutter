@@ -32,18 +32,24 @@ class DetailScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 250,
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 15,
-                          offset: const Offset(10, 10),
-                          color: Colors.black.withOpacity(0.5)),
-                    ]),
-                child: Image.network(thumb),
+              // hero : 화면이동시 시각적 연결고리를 만들어줌(애니메이션으로 화면내에서 이동)
+              // -> 따라서 연결할 페이지들에 hero 위젯을 달아줘야함
+              // hero 위젯은 고유값으로 tag를 달아줘야함
+              Hero(
+                tag: id,
+                child: Container(
+                  width: 250,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                            blurRadius: 15,
+                            offset: const Offset(10, 10),
+                            color: Colors.black.withOpacity(0.5)),
+                      ]),
+                  child: Image.network(thumb),
+                ),
               ),
             ],
           ),
