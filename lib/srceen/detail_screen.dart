@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toonflix/model/webtoon_detail.dart';
 import 'package:toonflix/model/webtoon_episode_model.dart';
 import 'package:toonflix/service/api_service.dart';
@@ -26,6 +27,27 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   late Future<WebtoonDetailsModel> webtoon;
   late Future<List<WebtoonEpisodeModel>> episodes;
+  // SharedPreferences 사용자 기기에 정보 저장할 수있게해주는 라이브러리
+  late SharedPreferences prefs;
+  bool isLiked = false;
+
+  Future initPrefs() async {
+    // 사용자의 저장소에 connection을 만듦
+    prefs = await SharedPreferences.getInstance();
+    // connection에 key값이 likedToons인 StringList가 있는지 찾는 것
+    final likedToons = prefs.getStringList('likedToons');
+    if (likedToons != null) {
+      // 현재 웹튼 좋아요 했는지 확인
+      if (likedToons.contains(widget.id) == true) {
+        setState(() {
+          isLiked = true;
+        });
+      }
+    } else {
+      // 사용자가 처음으로 앱을 실행할 때 likedToons StringList 생성
+      await prefs.setStringList('likedToons', []);
+    }
+  }
 
   // initState는 항상 build보다 먼저 호출
   @override
@@ -33,6 +55,22 @@ class _DetailScreenState extends State<DetailScreen> {
     super.initState();
     webtoon = ApiService.getToonById(widget.id);
     episodes = ApiService.getLatestEpisodesById(widget.id);
+    initPrefs();
+  }
+
+  onHeartTap() async {
+    final likedToons = prefs.getStringList('likedToons');
+    if (likedToons != null) {
+      if (isLiked) {
+        likedToons.remove(widget.id);
+      } else {
+        likedToons.add(widget.id);
+      }
+      await prefs.setStringList('likedToons', likedToons);
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
   }
 
   @override
@@ -43,6 +81,14 @@ class _DetailScreenState extends State<DetailScreen> {
         elevation: 2,
         backgroundColor: Colors.white,
         foregroundColor: Colors.green,
+        actions: [
+          IconButton(
+            onPressed: onHeartTap,
+            icon: isLiked
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_outline_rounded),
+          ),
+        ],
         title: Text(
           widget.title,
           style: const TextStyle(
